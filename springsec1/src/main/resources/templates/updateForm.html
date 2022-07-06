@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="~{layoutBase :: head}">
+<meta charset="UTF-8">
+</head>
+
+<body>
+	<div th:replace="~{layoutBase :: navbar}"></div>
+
+	<div class="container"
+		style="margin: 40px auto; display: flex; justify-content: center;">
+		<!-- style="display: flex; flex-direction: column; align-items: center;" -->
+
+		<form style="width: 40vw;" action="#" th:action="@{/springsec/update}"
+			th:object="${usuario}" method="post">
+			<fieldset>
+				<legend style="text-align: center;">Alterar Cadastro</legend>
+				<div class="form-group">
+					<label for="exampleInputEmail1" class="form-label mt-4">Id</label>
+					<input type="text" class="form-control" name="nome" id="nome"
+						readonly="" th:field="*{id}">
+					<div class="form-group">
+						<label for="exampleInputEmail1" class="form-label mt-4">Nome</label>
+						<input type="text" class="form-control" name="nome" id="nome"
+							placeholder="Nome e Sobrenome" th:field="*{nome}">
+					</div>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1" class="form-label mt-4">Email</label>
+						<input type="email" class="form-control" name="email" id="email"
+							placeholder="nome@email.com" th:field="*{email}">
+					</div>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1" class="form-label mt-4">Senha</label>
+						<input type="text" class="form-control" name="senha"
+							id="senha" th:field="*{senha}">
+					</div>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1" class="form-label mt-4">Nível
+							de acesso</label> <input type="text" class="form-control" name="role"
+							id="role" th:field="*{role}" placeholder="ADMIN ou USER">
+					</div>
+			</fieldset>
+			<div class="form-group"
+				style="margin: 30px auto; display: flex; flex-flow: row nowrap; justify-content: space-around;">
+				<a href="springsec/home/" class="btn btn-lg btn-outline-secondary"
+					style="width: 40%;">Cancelar</a> <input type="submit"
+					class="btn btn-lg btn-info" style="width: 40%;" value="Cadastrar"></input>
+			</div>
+		</form>
+	</div>
+
+</body>
+</html>
