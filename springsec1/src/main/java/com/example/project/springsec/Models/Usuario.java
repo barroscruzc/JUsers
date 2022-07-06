@@ -5,20 +5,31 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
+@SuppressWarnings("unused")
 @Entity(name = "usuarios")
 public class Usuario {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column (nullable=false, unique = true, length = 50)
+	
+	@Column(name="nome", unique=true)
+	@Size(min = 2, max = 50, message = "O nome deve conter de 2 a 50 caracteres")
 	private String nome;
-	@Column (nullable=false, unique = true, length = 50)
+	
+	@Column(name="email", unique=true)
 	private String email;
-	@Column (nullable=false, length = 10)
+	
+	@Column(name="senha")
+	@Size(min = 3, max = 10, message="Senha deve conter de 3 a 10 caracteres")
 	private String senha;
-	@Column (nullable=false)
+	
+	@Column(name="role")
+	@Size(min=4, max=5, message="Nível de acesso deve ser ROLE ou ADMIN")
 	private String role;
 	
 	@Override
