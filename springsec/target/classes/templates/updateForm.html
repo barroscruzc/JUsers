@@ -3,6 +3,11 @@
 
 <head th:replace="~{layoutBase :: head}">
 <meta charset="UTF-8">
+<style>
+.msgErro{
+color: red !important;
+}
+</style>
 
 </head>
 
@@ -13,33 +18,49 @@
 		style="margin: 40px auto; display: flex; justify-content: center;">
 		<!-- style="display: flex; flex-direction: column; align-items: center;" -->
 
-		<form style="width: 40vw;" action="#" th:action="@{/springsec/update}"
+		<form style="width: 40vw;" action="#" th:action="@{/springsec/update/save}"
 			th:object="${usuario}" method="post">
 			<fieldset>
 				<legend style="text-align: center;">Alterar Cadastro</legend>
+				
 				<div class="form-group">
 					<label for="exampleInputEmail1" class="form-label mt-4">Id</label>
 					<input type="text" class="form-control" name="id" id="id" readonly="" th:field="*{id}">
 					<div class="form-group">
 						<label for="exampleInputEmail1" class="form-label mt-4">Nome</label>
 						<input type="text" class="form-control" name="nome" id="nome" placeholder="Nome e Sobrenome" th:field="*{nome}" minlength="5" maxlength="50">
+						<span class="msgErro" th:if="${nomeExiste}" th:text="${nomeExiste}" style="color: red"></span>
 					</div>
 
 					<div class="form-group">
 						<label for="exampleInputEmail1" class="form-label mt-4">Email</label>
 						<input type="email" class="form-control" name="email" id="email" placeholder="nome@email.com" th:field="*{email}">
+						<span class="msgErro" th:if="${emailExiste}" th:text="${emailExiste}" style="color: red"></span>
 					</div>
 
 					<div class="form-group">
 						<label for="exampleInputEmail1" class="form-label mt-4">Senha</label> 
 						<input type="text" class="form-control" name="senha" id="senha" th:field="*{senha}" minlength="3" maxlength="10">
 					</div>
-<!-- <div class="form-group">
-						<label for="exampleInputEmail1" class="form-label mt-4">Nível de acesso</label> 
-						<input type="text" class="form-control" name="role"	id="role" :field="*{role}" placeholder="ADMIN ou USER" minlength="4" maxlength="5" onkeyup="this.value=this.value.toUpperCase()"/>
-					</div> -->
-					
 					</div>
+					<div class="form-group">
+					<label for="flexSwitchCheckDefault" class="form-label mt-4">Nível de Acesso</label>
+					<th:block th:each="rl : ${rolesList}">
+						<div th:if="${#lists.contains(usuario.roles, rl)}" class="form-check" name="rls">
+							<div class="form-check form-switch">
+						        <input class="form-check-input" type="checkbox" th:value="${rl.id}" checked/>
+						        <label class="form-check-label" for="admin" th:text="${rl.role}"></label>
+					      	</div>					      	
+				      	</div>
+				      	<div th:unless="${#lists.contains(usuario.roles, rl)}" class="form-check" name="rls">
+							<div class="form-check form-switch">
+						        <input class="form-check-input" type="checkbox" th:value="${rl.id}"/>
+						        <label class="form-check-label" for="admin" th:text="${rl.role}"></label>
+					      	</div>					      	
+				      	</div>
+				    </th:block>
+			      	</div>
+					
 			</fieldset>
 			<div class="form-group"	style="margin: 30px auto; display: flex; flex-flow: row nowrap; justify-content: space-around;">
 				<a href="/springsec/home" class="btn btn-lg btn-outline-secondary" style="width: 40%;">Cancelar</a> 

@@ -87,7 +87,7 @@ public class UsuarioController {
 
 	@PostMapping(path = "/save")
 	public String add(Usuario usuario, Model model, RedirectAttributes attributes) {
-		////verifica se já consta usuário cadastrado com os dados preenchidos no formulário de cadastro
+		//verifica se já consta usuário cadastrado com os dados preenchidos no formulário de cadastro
 		
 		//Verificação por e-mail
 		Usuario uEmail = usuarioRepository.findByEmail(usuario.getEmail());
@@ -121,28 +121,45 @@ public class UsuarioController {
 	}
 
 	// CRUD UPDATE - Editar usuário
-	@GetMapping(path="/update/{id}")
-	public String updateUser(@PathVariable("id") Integer id, Model model) {
+	@GetMapping(path="/update")
+	public String updateUser(Integer id, Model model) {
 		model.addAttribute("usuario", usuarioRepository.findById(id).get());
+		model.addAttribute("rolesList", roleRepository.findAll());
 		return "updateForm";
 	}
 	
-	@PostMapping(path = "/update")
-	public String update(@RequestParam Integer id, @RequestParam String nome, @RequestParam String email,
-			@RequestParam String senha) {
-		Usuario user = usuarioRepository.findById(id).get();
-		if (!nome.isEmpty()) {
-			user.setNome(nome);
-		}
-		if (!email.isEmpty()) {
-			user.setEmail(email);
-		}
-		if (!senha.isEmpty()) {
-			user.setSenha(senha);
+	@PostMapping(path = "/update/save")
+	public String update(Usuario usuario, Model model, RedirectAttributes attributes) {
+		
+		Usuario usEmail = usuarioRepository.findByEmail(usuario.getEmail());
+
+		/*Verificação do email
+		 * se for encontrado cadastro com o mesmo email preenchido no formulario, 
+		 * mas com id diferente, recarrega a pagina e exibe mensagem de erro*/
+		if ((usEmail != null ) && (usEmail.getId() != usuario.getId())){
+			//mensagem de erro
+			model.addAttribute("emailExiste", "E-mail já cadastrado para outro usuário!");
+			//recarrega a página, exibindo a mensagem de erro
+			return "updateForm";
 		}
 
-		usuarioRepository.save(user);
+		/*Verificação por nome:
+		 * se for encontrado cadastro com o mesmo nome preenchido no formulario, mas com id diferente,
+		 * recarrega a pagina e exibe mensagem de erro*/
+		Usuario usNome = usuarioRepository.findByNome(usuario.getNome());
+		if ((usNome != null ) && (usNome.getId() != usuario.getId())) {
+			//mensagem de erro
+			model.addAttribute("nomeExiste", "Nome de usuário já cadastrado para outro usuário!");
+			//recarrega a página, exibindo a mensagem de erro
+			return "updateForm";
+		} else {
+		//associa os novos roles (USER ou ADMIN) ao usuário
+			
+			
+		// salva o novo usuario no banco de dados
+		usuarioRepository.save(usuario);
 		return "redirect:/springsec/all";
+		}
 	}
 
 	// CRUD DELETE - Excluir usuário
