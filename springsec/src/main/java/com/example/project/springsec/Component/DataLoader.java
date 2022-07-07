@@ -21,7 +21,7 @@ public class DataLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		String[] roles = { "ADMIN", "USER" };
+		String[] roles = {"ADMIN", "USER"};
 
 		for (String roleString: roles) {
 			Role role = roleRepository.findByRole(roleString);

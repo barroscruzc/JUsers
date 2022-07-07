@@ -12,5 +12,6 @@ import com.example.project.springsec.Models.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	
 	List<Usuario> findByNomeContains(String nome);
-	
+	Usuario findByEmail(String email);
+	Usuario findByNome(String nome);
 }

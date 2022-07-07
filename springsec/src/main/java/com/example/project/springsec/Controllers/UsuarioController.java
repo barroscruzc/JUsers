@@ -1,6 +1,7 @@
 package com.example.project.springsec.Controllers;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.project.springsec.Models.Role;
 import com.example.project.springsec.Models.Usuario;
+import com.example.project.springsec.Repositories.RoleRepository;
 import com.example.project.springsec.Repositories.UsuarioRepository;
 
 @SuppressWarnings("unused")
@@ -29,8 +32,12 @@ import com.example.project.springsec.Repositories.UsuarioRepository;
 @RequestMapping(path = "/springsec")
 public class UsuarioController {
 
-	@Autowired // Comunica com UsuarioRepository
+	//Com a anotação Autowired, comunica automaticamente com os repositories
+	@Autowired 
 	private UsuarioRepository usuarioRepository;
+	
+	@Autowired 
+	private RoleRepository roleRepository;
 
 	@GetMapping(path = "/home")
 	public String menu() {
@@ -78,18 +85,39 @@ public class UsuarioController {
 		return "newUser";
 	}
 
-	@PostMapping(path = "/add")
-	public String add(@RequestParam String nome, @RequestParam String email, @RequestParam String senha) {
-		// encapsulamento dos dados
-		Usuario u = new Usuario();
-		u.setNome(nome);
-		u.setEmail(email);
-		u.setSenha(senha);
+	@PostMapping(path = "/save")
+	public String add(Usuario usuario, Model model, RedirectAttributes attributes) {
+		////verifica se já consta usuário cadastrado com os dados preenchidos no formulário de cadastro
+		
+		//Verificação por e-mail
+		Usuario uEmail = usuarioRepository.findByEmail(usuario.getEmail());
+		if (uEmail != null) {
+			//mensagem de erro
+			model.addAttribute("emailExiste", "E-mail já cadastrado!");
+			//recarrega a página, exibindo a mensagem de erro
+			return "/newUser";
+		}
 
+		//Verificação por nome
+		Usuario uNome = usuarioRepository.findByNome(usuario.getNome());
+		if (uNome != null) {
+			//mensagem de erro
+			model.addAttribute("nomeExiste", "Nome de usuário já cadastrado!");
+			//recarrega a página, exibindo a mensagem de erro
+			return "/newUser";
+		} else {
+			
+		//busca os roles atribuídos ao usuário
+			Role role = roleRepository.findByRole("USER");
+			List<Role> roles = new ArrayList<Role>();
+			roles.add(role);
+			usuario.setRoles(roles); //associa o role USER ao usuário
+			
+			
 		// salva o novo usuario no banco de dados
-		usuarioRepository.save(u);
-
+		usuarioRepository.save(usuario);
 		return "redirect:/springsec/all";
+		}
 	}
 
 	// CRUD UPDATE - Editar usuário
